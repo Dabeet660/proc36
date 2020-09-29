@@ -8,7 +8,8 @@ var changingGameState,readingGameState;
 var renderbedroom, rendergarden, renderwashroom;
 var sadDogImg;
 var currentTime;
-var fedTime;
+var fedTimeref;
+var fedTimeData;
 
 function preload()
 {
@@ -45,6 +46,11 @@ function setup() {
      gameState = data.val();
   })
 
+  fedTimeref = database.ref('FedTime/lastFed')
+  fedTimeref.on("value", (data) => {
+    fedTimeData = data.val();
+  })
+
 }
 
 
@@ -62,7 +68,7 @@ function draw() {
      lastFed = data.val();
    })
 
-   lastFedJSON = JSON.stringify(lastFed)
+   lastFedJSON = fedTimeData
     // {lastFed: "12"} console.log(FedTime.lastFed)
 
 
@@ -71,11 +77,11 @@ function draw() {
    fill(255,255,254)
    textSize(15)
    if(lastFed>12){
-     text(lastfedJSON%12 + "PM" ,350,30) 
+     text("Last Fed:" + lastfedJSON%12,350,30) 
    } else if(lastFed==0){
      text("Last Feed : 12 AM",350,30)
    } else { 
-     text(lastFedJSON+"AM",350,30)
+     text("Last Fed:" + lastFedJSON,350,30)
    }
 
    if(gameState != "hungry"){
@@ -109,7 +115,7 @@ function draw() {
      foodObj.display();
    }
    
-
+ 
 
   foodObj.display();
   foodObj.getFoodStock();
